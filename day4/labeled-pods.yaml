@@ -1,0 +1,65 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: frontend-dev-pod
+  namespace: day4
+  labels:
+    app: ecommerce
+    environment: dev
+    tier: frontend
+    partition: blue
+spec:
+  containers:
+    - name: nginx
+      image: nginx:1.27
+      ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: backend-dev-pod
+  namespace: day4
+  labels:
+    app: ecommerce
+    environment: dev
+    tier: backend
+spec:
+  containers:
+    - name: nginx
+      image: nginx:1.27
+      ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: frontend-prod-pod
+  namespace: day4
+  labels:
+    app: ecommerce
+    environment: prod
+    tier: frontend
+    partition: green
+spec:
+  containers:
+    - name: nginx
+      image: nginx:1.27
+      ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: backend-qa-pod
+  namespace: day4
+  labels:
+    app: ecommerce
+    environment: qa
+    tier: backend
+spec:
+  containers:
+    - name: nginx
+      image: nginx:1.27
+      ports:
+        - containerPort: 80

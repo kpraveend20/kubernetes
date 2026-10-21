@@ -1,0 +1,28 @@
+# VS Code
+.vscode/
+
+# Kubernetes local files
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Minikube/local cluster files
+.minikube/
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+.terraform.lock.hcl
+
+# Secrets
+*.env
+.env
+*.pem
+*.key

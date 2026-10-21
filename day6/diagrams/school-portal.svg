@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="690" viewBox="0 0 1200 690" role="img" aria-labelledby="title desc">
+  <title id="title">School Portal: Kubernetes networking architecture</title>
+  <desc id="desc">A browser accesses the frontend through NodePort 30086. The frontend proxies API requests through backend-service to backend Pods. A separate network-client tests DNS and backend access. After the allow policy is added, that client can reach DNS and the backend but not the frontend or internet.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10Z" fill="#315b86"/></marker>
+    <marker id="greenArrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10Z" fill="#17764d"/></marker>
+    <style>
+      text { font-family: Arial, sans-serif; fill: #19324d; }
+      .title { font-size: 28px; font-weight: 700; }
+      .heading { font-size: 18px; font-weight: 700; }
+      .body { font-size: 16px; }
+      .small { font-size: 14px; }
+      .line { fill: none; stroke: #315b86; stroke-width: 2.5; marker-end: url(#arrow); }
+      .allowed { fill: none; stroke: #17764d; stroke-width: 2.5; marker-end: url(#greenArrow); }
+      .dns { stroke-dasharray: 7 5; }
+    </style>
+  </defs>
+  <rect width="1200" height="690" fill="#f6f9fd"/>
+  <text x="35" y="48" class="title">School Portal: follow the request</text>
+  <text x="35" y="78" class="body">Blue = application path   |   Dashed = DNS lookup   |   Green = allowed client test</text>
+  <rect x="218" y="110" width="947" height="447" rx="18" fill="#edf3fb" stroke="#a8bbd2" stroke-width="2"/>
+  <text x="242" y="140" class="heading">Minikube cluster</text>
+  <text x="242" y="164" class="small">Application workloads: day6 namespace. Cluster DNS: kube-system namespace.</text>
+  <rect x="32" y="187" width="157" height="105" rx="12" fill="#ffffff" stroke="#a8bbd2"/>
+  <text x="55" y="221" class="heading">1. Browser</text>
+  <text x="55" y="249" class="body">Open /</text>
+  <text x="55" y="274" class="body">Then click /api</text>
+  <rect x="246" y="187" width="190" height="105" rx="12" fill="#dfeaff" stroke="#87a6d1"/>
+  <text x="263" y="219" class="heading">2. NodePort</text>
+  <text x="263" y="247" class="body">frontend-nodeport</text>
+  <text x="263" y="273" class="body">30086 → port 80</text>
+  <rect x="491" y="187" width="180" height="105" rx="12" fill="#fff" stroke="#87a6d1"/>
+  <text x="507" y="219" class="heading">3. Frontend</text>
+  <text x="507" y="247" class="body">2 NGINX Pods</text>
+  <text x="507" y="273" class="body">/api reverse proxy</text>
+  <rect x="727" y="187" width="185" height="105" rx="12" fill="#dfeaff" stroke="#87a6d1"/>
+  <text x="743" y="219" class="heading">4. ClusterIP</text>
+  <text x="743" y="247" class="body">backend-service</text>
+  <text x="743" y="273" class="body">port 80</text>
+  <rect x="967" y="187" width="169" height="105" rx="12" fill="#fff" stroke="#87a6d1"/>
+  <text x="981" y="219" class="heading">5. Backend</text>
+  <text x="981" y="247" class="body">2 NGINX Pods</text>
+  <text x="981" y="273" class="body">HTTP on port 80</text>
+  <path d="M189 239 H246" class="line"/>
+  <path d="M436 239 H491" class="line"/>
+  <path d="M671 239 H727" class="line"/>
+  <path d="M912 239 H967" class="line"/>
+  <rect x="270" y="400" width="217" height="103" rx="12" fill="#fff4d8" stroke="#d0ae58"/>
+  <text x="287" y="432" class="heading">network-client Pod</text>
+  <text x="287" y="460" class="body">BusyBox test commands</text>
+  <text x="287" y="485" class="small">Policy selects only this Pod</text>
+  <rect x="650" y="409" width="265" height="94" rx="12" fill="#e4f4ec" stroke="#69a98a"/>
+  <text x="668" y="439" class="heading">CoreDNS / kube-system</text>
+  <text x="668" y="466" class="body">DNS via kube-dns Service</text>
+  <text x="668" y="489" class="small">UDP + TCP 53</text>
+  <path d="M487 459 H650" class="allowed dns"/>
+  <text x="512" y="448" class="small">DNS allowed</text>
+  <path d="M487 416 H567 V362 H820 V292" class="allowed"/>
+  <text x="600" y="353" class="small">Backend HTTP allowed</text>
+  <text x="270" y="536" class="small">After both policies: client → frontend BLOCKED; client → internet BLOCKED.</text>
+  <rect x="32" y="584" width="1133" height="76" rx="12" fill="#fff" stroke="#a8bbd2"/>
+  <text x="51" y="614" class="heading">What makes this work?</text>
+  <text x="51" y="641" class="body">Calico: Pod connectivity + policy   •   Service dataplane: forwarding   •   CoreDNS: name resolution</text>
+</svg>

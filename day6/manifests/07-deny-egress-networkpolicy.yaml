@@ -1,0 +1,12 @@
+﻿apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: deny-egress-from-network-client
+  namespace: day6
+spec:
+  podSelector:
+    matchLabels:
+      app: network-client
+  policyTypes:
+    - Egress
+  egress: []

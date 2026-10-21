@@ -1,0 +1,60 @@
+﻿apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  namespace: day6
+  labels:
+    app: frontend
+    tier: web
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+        tier: web
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:1.27
+          command:
+            - /bin/sh
+            - -c
+          args:
+            - |
+              cat > /usr/share/nginx/html/index.html <<'HTML'
+              <!doctype html>
+              <html lang="en">
+              <head><meta charset="utf-8"><title>School Portal</title></head>
+              <body>
+                <h1>School Portal</h1>
+                <p>Welcome to the Day 6 Kubernetes networking lab.</p>
+                <p><a href="/api">View the backend classroom message</a></p>
+              </body>
+              </html>
+              HTML
+              cat > /etc/nginx/conf.d/default.conf <<'NGINX'
+              server {
+                listen 80;
+                location / {
+                  root /usr/share/nginx/html;
+                  index index.html;
+                }
+                location = /api {
+                  proxy_pass http://backend-service.day6.svc.cluster.local/;
+                }
+              }
+              NGINX
+              nginx -g 'daemon off;'
+          ports:
+            - name: http
+              containerPort: 80
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 2
+            periodSeconds: 3
