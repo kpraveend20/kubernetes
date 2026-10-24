@@ -79,6 +79,9 @@ kubectl exec -n mini-shop api-check -- nslookup backend-service
 kubectl exec -n mini-shop api-check -- wget -qO- http://backend-service:8000/api/products
 ```
 
+
+--------------------------------------------------------------------------------------
+
 ## Troubleshooting: `CrashLoopBackOff` and watchstream errors
 
 ### What happened
@@ -190,3 +193,38 @@ The application was verified with all three nodes `Ready`, both backend
 replicas and the frontend pod `1/1` ready, and an HTTP 200 response from
 `http://localhost:8080/api/products`. Host CPU saturation can still cause
 intermittent delays, so reducing host CPU usage remains important.
+
+
+-------------------------------------------------------------------------------------
+
+# Kubernetes Mini E-Commerce Project
+
+## Environment
+
+| Component | Details |
+|---|---|
+| Cloud | AWS |
+| Compute | EC2 t3.large |
+| OS | Ubuntu 24.04 |
+| Container Runtime | Docker |
+| Kubernetes | k3s |
+| Cluster Tool | k3d |
+| CLI | kubectl |
+| Region | ap-south-1 |
+
+## Architecture
+
+EC2
+ |
+ Docker
+ |
+ k3d
+ |
+ +-- server
+ +-- worker-0
+ +-- worker-1
+ |
+ Kubernetes
+ |
+ +-- Frontend
+ +-- Backend
