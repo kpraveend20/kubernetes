@@ -1,0 +1,59 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: notebooks-headless
+  namespace: workload-lab
+spec:
+  clusterIP: None
+  selector:
+    app: notebooks
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: notebooks
+  namespace: workload-lab
+spec:
+  serviceName: notebooks-headless
+  replicas: 2
+  selector:
+    matchLabels:
+      app: notebooks
+  template:
+    metadata:
+      labels:
+        app: notebooks
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:1.28
+          ports:
+            - containerPort: 80
+          readinessProbe:
+            tcpSocket:
+              port: 80
+            initialDelaySeconds: 3
+            periodSeconds: 5
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 250m
+              memory: 128Mi
+          volumeMounts:
+            - name: data
+              mountPath: /usr/share/nginx/html
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 128Mi

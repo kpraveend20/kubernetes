@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: node-reporter
+  namespace: workload-lab
+spec:
+  selector:
+    matchLabels:
+      app: node-reporter
+  template:
+    metadata:
+      labels:
+        app: node-reporter
+    spec:
+      nodeSelector:
+        kubernetes.io/os: linux
+      containers:
+        - name: reporter
+          image: busybox:1.37
+          command:
+            - /bin/sh
+            - -c
+            - |
+              while true; do
+                echo "Node: ${NODE_NAME}, Pod: ${POD_NAME}"
+                sleep 30
+              done
+          env:
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+          resources:
+            requests:
+              cpu: 10m
+              memory: 16Mi
+            limits:
+              cpu: 100m
+              memory: 32Mi
